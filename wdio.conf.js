@@ -53,11 +53,11 @@ export const config = {
     // https://saucelabs.com/platform/platform-configurator
     //
     capabilities: [{
-       platformName: 'Android',
+       'platformName': 'Android',
         'appium:automationName': 'UiAutomator2',
-        'appium:deviceName': 'emulator-5554',
+        'appium:deviceName': 'Pixel_7A',
         'appium:appPackage': 'com.google.android.youtube',   // lo confirmamos con el adb dumpsys
-        //'appium:appActivity': 'com.google.android.youtube.app.honeycomb.Shell$HomeActivity', // idem
+        'appium:appActivity': 'com.google.android.youtube.app.honeycomb.Shell$HomeActivity', // idem
         'appium:autoLaunch': false,
         'appium:noReset': true
     }],
@@ -264,6 +264,12 @@ export const config = {
             await browser.takeScreenshot();
         }
      },
+
+     afterStep: async function (step, scenario, result) {
+        if (!result.passed) {
+            await browser.takeScreenshot();
+        }
+      },
 
 
     /**

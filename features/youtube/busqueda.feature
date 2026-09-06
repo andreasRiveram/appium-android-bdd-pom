@@ -1,6 +1,6 @@
 Feature: Búsqueda de videos en YouTube
 
-  @smoke @regression
+  @regression
   Scenario Outline: Buscar distintos términos "<termino_busqueda>" y validar resultados
     Given que la aplicación de YouTube está abierta
     When busco el término "<termino_busqueda>"
@@ -13,7 +13,7 @@ Feature: Búsqueda de videos en YouTube
       | juanes la camisa negra   |
   
 
-   @smoke @data-driven
+   @regression @data-driven
   Scenario: Buscar múltiples términos desde archivo de datos
     Given que la aplicación de YouTube está abierta
     When busco todos los términos definidos en el archivo de datos
