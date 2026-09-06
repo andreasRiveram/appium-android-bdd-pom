@@ -73,15 +73,20 @@ jobs:
             exit $TEST_EXIT_CODE           
                       
 
-      - name: Verificar resultados de Allure
-        if: always()
-        run: ls -la allure-results/ || echo "La carpeta allure-results no existe"
-
       - name: Generar reporte de Allure
+          if: always()
+          run: |
+            npm install -g allure-commandline --no-fund --no-audit
+            # Generar el reporte HTML consolidado desde los JSON
+            npx allure generate allure-results --clean -o allure-report
+
+      - name: Verificar archivos del reporte
         if: always()
         run: |
-          npm install -g allure-commandline --no-fund --no-audit
-          npx allure generate allure-results --clean -o allure-report
+          echo "=== Contenido de allure-results ==="
+          ls -la allure-results/
+          echo "=== Contenido de allure-report ==="
+          ls -la allure-report/
 
       - name: Publicar reporte como artefacto
         if: always()
@@ -90,4 +95,4 @@ jobs:
           name: allure-report
           path: allure-report
           retention-days: 15
-          
+            
