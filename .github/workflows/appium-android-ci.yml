@@ -43,7 +43,7 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Levantar emulador y ejecutar tests
+     - name: Levantar emulador y ejecutar tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 34
@@ -56,23 +56,20 @@ jobs:
             npm install -g appium
             appium driver install uiautomator2
             
-          
-            appium --allow-insecure=uiautomator2:adb_shell > appium.log 2>&1 &
-            echo $! > appium.pid
+            # Iniciar Appium en segundo plano desvinculando salidas y guardando PID
+            appium --allow-insecure=uiautomator2:adb_shell > appium.log 2>&1 & echo $! > appium.pid
             
+            # Pausa para dar tiempo a que el servidor de Appium inicialice
+            sleep 10
             
-            npx wait-on http://127.0.0.1:4723/status --timeout 30000 || sleep 10
-            
-            
+            # Ejecutar WebdriverIO y capturar el resultado
             TEST_EXIT_CODE=0
             npx wdio run wdio.conf.js --cucumberOpts.tagExpression="${{ github.event.inputs.tag || '@smoke' }}" || TEST_EXIT_CODE=$?
             
+            # Finalizar Appium mediante el PID guardado sin bloques if multilínea
+            [ -f appium.pid ] && kill $(cat appium.pid) || true
             
-            if [ -f appium.pid ]; then
-              kill $(cat appium.pid) || true
-            fi
-            
-            
+            # Retornar el código de salida de los tests
             exit $TEST_EXIT_CODE
 
       - name: Verificar resultados de Allure
