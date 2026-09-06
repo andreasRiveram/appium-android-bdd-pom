@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag de Cucumber a ejecutar (ej: @smoke, @regression)'
+        required: true
+        default: '@smoke'
+        type: string
 
 jobs:
   test-android:
@@ -39,11 +45,13 @@ jobs:
           arch: x86_64
           profile: pixel_7
           script: |
+            adb wait-for-device
+            adb devices
             npm install -g appium
             appium driver install uiautomator2
             appium --allow-insecure=uiautomator2:adb_shell &
             sleep 10
-            npx wdio run wdio.conf.js --cucumberOpts.tagExpression="@smoke"
+            npx wdio run wdio.conf.js --cucumberOpts.tagExpression="${{ github.event.inputs.tag || '@smoke' }}"
 
       - name: Generar reporte de Allure
         if: always()

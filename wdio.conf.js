@@ -55,7 +55,7 @@ export const config = {
     capabilities: [{
        'platformName': 'Android',
         'appium:automationName': 'UiAutomator2',
-        'appium:deviceName': 'Pixel_7A',
+        'appium:deviceName': 'emulator-5554',
         'appium:appPackage': 'com.google.android.youtube',   // lo confirmamos con el adb dumpsys
         'appium:appActivity': 'com.google.android.youtube.app.honeycomb.Shell$HomeActivity', // idem
         'appium:autoLaunch': false,
